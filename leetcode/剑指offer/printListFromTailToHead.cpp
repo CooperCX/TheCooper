@@ -1,12 +1,6 @@
 #include <vector>
 #include <algorithm>
-struct ListNode
-{
-    int val = 0;
-    ListNode* next = nullptr;
-
-    ListNode(int v, ListNode* p) : val(v), next(p) {}
-};
+#include "struct_define.h"
 
 class Solution {
 public:

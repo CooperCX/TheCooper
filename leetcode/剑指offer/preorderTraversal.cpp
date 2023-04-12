@@ -1,15 +1,6 @@
 #include <vector>
 #include "stack.h"
-
-struct TreeNode
-{
-    int val = 0;
-    TreeNode* left = nullptr;
-    TreeNode* right = nullptr;
-
-    TreeNode(int val, TreeNode* left, TreeNode* right) :
-        val(val), left(left), right(right) {}
-};
+#include "struct_define.h"
 
 
 // 递归
@@ -40,16 +31,16 @@ public:
             return results;
         }
         stack<TreeNode*> s;
-        s.push_back(root);
+        s.push(root);
         while(!s.empty()) {
             TreeNode* node = s.top();
             results.emplace_back(node->val);
             s.pop();
             if(node->right) {
-                s.push_back(node->right);
+                s.push(node->right);
             }
             if(node->left) {
-                s.push_back(node->left);
+                s.push(node->left);
             }
         }
         return results;

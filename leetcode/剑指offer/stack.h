@@ -20,20 +20,18 @@ public:
         m_Head = new Node<T>;
     }
 
-    void push_back(const T& arg) {
+    void push(const T& arg) {
         Node<T>* p = new Node<T>(arg);
         p->next = m_Head->next;
         m_Head->next = p;
         m_Size++;
     }
 
-    T pop() {
+    void pop() {
         if (m_Head->next != nullptr) {
             Node<T>* temp = m_Head->next;
             m_Head->next = temp->next;
-            T temp_value = temp->val;
             delete temp;
-            return temp_value;
         }
     }
 

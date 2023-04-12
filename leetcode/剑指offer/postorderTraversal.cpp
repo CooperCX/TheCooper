@@ -1,15 +1,9 @@
 #include <vector>
+#include "stack.h"
+#include "struct_define.h"
 
-struct TreeNode
-{
-    int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode(int val, TreeNode* left, TreeNode* right) :
-        val(val), left(left), right(right) {}
-};
-
-class Solution {
+//递归解法
+class RecursionSolution {
 public:
     void postorder(TreeNode* node, std::vector<int>& res) {
         if (node == nullptr) {
@@ -28,6 +22,37 @@ public:
         std::vector<int> results;
 
         postorder(root, results);
+        return results;
+    }
+};
+
+
+//借助栈
+class StackSolution {
+public:
+    std::vector<int> postorderTraversal(TreeNode* root) {
+        std::vector<int> results;
+        if (root == nullptr) {
+            return results;
+        }
+        stack<TreeNode*> s;
+        TreeNode* pre = nullptr;
+        while (!s.empty() || root != nullptr) {
+            while (root != nullptr) {
+                s.push(root);
+                root = root->left;
+            }
+            TreeNode* node = s.top();
+            s.pop();
+            if (node->right == nullptr || node->right == pre) {
+                results.emplace_back(node->val);
+                pre = node;
+            } else {
+                s.push(node);
+                root = node->right;
+            }
+        }
+        
         return results;
     }
 };
