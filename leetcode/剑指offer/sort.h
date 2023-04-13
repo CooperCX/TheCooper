@@ -98,7 +98,21 @@ public:
     void mergeSort(std::vector<int>& numbers) {
         int length = numbers.size(); // implicit
         std::vector<int> temp(length, 0);
-        mergeSortCore(numbers, temp, 0, length);
+        mergeSortCore(numbers, temp, 0, length - 1);
+    }
+
+    /*堆排序*/
+    void heapSort(std::vector<int>& numbers) {
+        int n = numbers.size();
+        // 初始化
+        for (int i = (n - 2) / 2; i >= 0; i--) {
+            heapify(numbers, n, i);
+        }
+
+        for (int i = 0; i < n; i++) {
+            std::swap(numbers[0], numbers[n - i - 1]);
+            heapify(numbers, n - i - 1, 0);
+        }
     }
 
 private:
@@ -127,5 +141,18 @@ private:
         for (int i = start; i <= end; i++) {
             numbers[i] = temp[i];
         }
+    }
+
+    /*堆排序*/
+    void heapify(std::vector<int>& numbers, int n, int i) {
+        int l = i * 2 + 1, r = i * 2 + 2;
+        int max = i;
+        if (l < n && numbers[l] > numbers[max]) {
+            max = l;
+        }
+        if (r < n && numbers[r] > numbers[max]) {
+            max = r;
+        }
+        std::swap(numbers[max], numbers[i]);
     }
 };
