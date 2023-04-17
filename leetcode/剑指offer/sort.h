@@ -1,7 +1,8 @@
 #pragma once
 
 #include <vector>
-
+#include <algorithm>
+#include <cmath>
 class Sort {
 public:
 
@@ -115,9 +116,74 @@ public:
         }
     }
 
+    /*计数排序*/
+    void countSort(std::vector<int>& numbers) {
+        int vecCountLength = (*std::max_element(numbers.begin(), numbers.end())) + 1;
+        std::vector<int> vecCount(vecCountLength, 0);
+        for (size_t i = 0; i < numbers.size(); i++) {
+            vecCount[numbers[i]]++;
+        }
+        numbers.clear();
+        for (int i = 0; i < vecCountLength; i++) {
+            int Count = vecCount[i];
+            while (Count > 0) {
+                numbers.push_back(i);
+                Count--;
+            }
+        }
+    }
+
+    /*桶排序*/
+    void bucketSort(std::vector<int>& numbers, int bucketSize) {
+        int min = *(std::min_element(numbers.begin(), numbers.end()));
+        int max = *(std::max_element(numbers.begin(), numbers.end()));
+
+        int bucketCount = std::floor(max - min) / bucketSize + 1;
+        std::vector<std::vector<int>> buckets(bucketSize); 
+        for (size_t i = 0; i < numbers.size(); i++) {
+            buckets[std::floor(numbers[i] - min) / bucketCount].push_back(numbers[i]);
+        }
+
+        numbers.clear();
+        for (int i = 0; i < bucketSize; i++) {
+            insertionSort(buckets[i]);
+            for (size_t j = 0; j < buckets[i].size(); j++) {
+                numbers.push_back(buckets[i][j]);
+            }
+        }
+    }
+
+    /*基数排序*/
+    void radixSort(std::vector<int>& numbers) {
+        int max_number = *(std::max_element(numbers.begin(), numbers.end()));
+        std::vector<int> temp(numbers.size());
+        std::vector<int> count(10);
+        int radix = 1;
+        while (radix <= max_number) {
+            for (int i = 0; i < 10; i++) {
+                count[i] = 0;
+            }
+            for (size_t i = 0; i < numbers.size(); i++) {
+                int k = (numbers[i] / radix) % 10;
+                count[k]++;
+            }
+            for (int i = 1; i < 10; i++) {
+                count[i] = count[i] + count[i - 1];
+            }
+            for (int i = numbers.size() - 1; i >= 0; i--) {
+                int k = (numbers[i] / radix) % 10;
+                temp[count[k] - 1] = numbers[i];
+            }
+            for (size_t i = 0; i < numbers.size(); i++) {
+                numbers[i] = temp[i];
+            }
+            radix *= 10;
+        }
+    }
+
 private:
 
-    /*归并排序*/
+    /*归并排序辅助函数*/
     void mergeSortCore(std::vector<int>& numbers, std::vector<int>& temp, int start, int end) {
         if (start >= end) {
             return;
@@ -143,7 +209,7 @@ private:
         }
     }
 
-    /*堆排序*/
+    /*堆排序辅助函数*/
     void heapify(std::vector<int>& numbers, int n, int i) {
         int l = i * 2 + 1, r = i * 2 + 2;
         int max = i;
@@ -153,6 +219,9 @@ private:
         if (r < n && numbers[r] > numbers[max]) {
             max = r;
         }
-        std::swap(numbers[max], numbers[i]);
+        if (max != i) {
+            std::swap(numbers[max], numbers[i]);
+            heapify(numbers, n, max);
+        }
     }
 };
