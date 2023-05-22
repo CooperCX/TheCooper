@@ -1,5 +1,5 @@
 #include <vector>
-
+#include <algorithm>
 
 // 使用stl标准库函数
 class Solution {
