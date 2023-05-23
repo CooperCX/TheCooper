@@ -1,3 +1,5 @@
+/*前序遍历：根-左-右*/
+
 #include <vector>
 #include "stack.h"
 #include "struct_define.h"

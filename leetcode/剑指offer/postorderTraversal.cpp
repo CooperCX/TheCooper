@@ -1,3 +1,5 @@
+/*后序遍历：左-右-根*/
+
 #include <vector>
 #include "stack.h"
 #include "struct_define.h"
@@ -52,7 +54,7 @@ public:
                 root = node->right;
             }
         }
-        
+
         return results;
     }
 };
