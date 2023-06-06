@@ -27,3 +27,15 @@ struct TreeNode
     TreeNode(int val) :
         val(val), left(nullptr), right(nullptr) {}
 };
+
+struct TreeLinkNode
+{
+    int val;
+    TreeLinkNode* left;
+    TreeLinkNode* right;
+    TreeLinkNode* next;
+    TreeLinkNode(int val) :
+        val(val), left(nullptr), right(nullptr), next(nullptr) {
+
+    }
+};

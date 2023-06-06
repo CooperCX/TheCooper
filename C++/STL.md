@@ -117,3 +117,7 @@
         * 链地址法：将具有相同哈希地址的键值对存储在同一个线性链表中，即每个哈希地址处为一个链表。插入或查询时，先找到对应的链表，再在链表上进行插入或查询
             * 每个哈希地址处的链表为桶（bucket），存放bucket的哈希表是vector容器。因此，哈希表具备动态扩容能力。
         * 二者的优劣：链地址法使用更多的存储空间，减少了插入和查询的平均时间
+
+## priority_queue
+* 大顶堆：结点的值都大于等于其左右结点的值，`std::priority_queue<Type, Container, std::less<Type>>`默认
+* 小顶堆：结点的值都小于等于其左右结点的值，`std::priority_queue<Type, Container, std::greater<Type>>`
