@@ -14,10 +14,10 @@ public:
         if (node->left) {
             postorder(node->right, res);
         }
-        res.emplace_back(node->val);
         if (node->right) {
             postorder(node->left, res);
         }
+        res.emplace_back(node->val);
     }
 
     std::vector<int> postorderTraversal(TreeNode* root) {

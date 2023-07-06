@@ -33,7 +33,7 @@ void ShowArgsCore(const T& t) {
     std::cout << t << std::endl;
 }
 
-template<typename T, typename ...Args> 
+template<typename T, typename ...Args>
 void ShowArgsCore(const T& t, const Args&... args) {
     std::cout << t << " ";
     ShowArgsCore(args...);
@@ -77,7 +77,7 @@ void ShowArgs(Args&&... args) {
 ### 8. lambda表达式
 ```
 [capture](params){function}
-capture: 
+capture:
 []表示不使用外部变量
 [a]表示使用值传递捕获外部变量a
 [&a]表示使用引用传递捕获外部变量a
@@ -107,4 +107,18 @@ auto lambda = [a](int value) mutable {std::cout << a << std::endl;};
 ```
 std::vector values = {1, 2, 5, 3, 4};
 auto it = std::find_if(values.begin(), values.end(), [](int i){ return i > 3; });
+```
+
+### 9. C++11使用using定义别名，代替typedef
+* 重定义一个类型，二者功能相同
+```
+1. typedef unsigned int uint_t;
+2. using unint_t = unsigned int;
+```
+* 重定义一个模版，typedef不可用于模板别名，using可用于模板别名
+```
+template<typename T>
+using map_str_t = std::map<std::string, T>;
+
+map_str_t<int> map_str_int;
 ```
