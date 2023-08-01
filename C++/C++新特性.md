@@ -53,12 +53,15 @@ void ShowArgs(Args&&... args) {
 * 如何实现自动释放：类对象在生命周期结束时自动调用析构函数，释放动态分配的内存空间。
 * 常见的智能指针
     * unique_ptr：作用域智能指针，当作用域结束后自动销毁。不可复制，否则会有两个unique_ptr指向同一个内存，造成多次释放。
+        * unique_ptr 中的唯一数据成员是封装的指针。 这意味着，unique_ptr 与该指针的大小完全相同，不是四个字节就是八个字节。
     ```
     class Entity {};
     std::unique_ptr<Entity> entity(new Entity());
     std::unique_ptr<Entity> entity = std::make_unique<Entity>(); // C++14才有，推荐这种写法，在构造异常时更加安全。
     ```
     * shared_ptr：基于引用计数的智能指针，当指针的引用计数为0时自动释放。可以拷贝和赋值。
+        * shared_ptr的大小为两个指针的大小，一个用于对象，一个用于包含引用计数的共享控制快
+        * 调用use_count函数可以获得当前托管指针的引用计数
     ```
     std::shared_ptr<Entity> shared_entity = std::make_shared<Entity>(); // C++11就有了
     std::shared_ptr<Entity> shared_entity(new Entity()); // 不推荐这种写法。原因：shared_ptr还需要分配一个空间（控制块）存储引用计数int* pcount，将分配好的entity指针传递给shared_ptr构造函数，会做两次分配，先分配new Entity，再分配控制块。
@@ -73,6 +76,10 @@ void ShowArgs(Args&&... args) {
     }  // 外面的作用域结束后，e0结束，此时entity的引用计数变为0，entity被释放
     ```
     * weak_ptr：配合shared_ptr使用，可以拷贝，但不会增加引用计数。避免出现智能指针循环引用。
+* 智能指针常用函数
+    * get(): 获取只能指针托管的指针
+    * release(): 取消智能指针对动态内存的托管
+    * reset(): 重置智能指针托管的内存地址，如果地址不一致，原来的会被析构掉
 
 ### 8. lambda表达式
 ```

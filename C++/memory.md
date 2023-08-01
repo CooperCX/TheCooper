@@ -39,6 +39,9 @@
 * 后果：导致性能下降，内存使用耗尽，程序崩溃。
 * 避免方法：使用智能指针，或者严格释放内存。
 * 检查定位：内存检测工具，有valgrind、 sanitizer等。
+    * `valgrind --log-file=./valgrind_report.log --leak_check=full --show-leak-kinds=all --show_reachable=no --track_origins=yes (可执行文件) [可执行文件参数]`
+    * 报告中可以看到进程号、堆内存分配Heap Summary、内存泄漏信息（重点查看definite leak，其次是possible leak）、总结
+* 如何发现内存泄漏：通过任务管理器（Windows）或top（Linux）
 
 ### 6. 空类的大小
 * 空类的大小不为0，因为C++要求不同的对象要有不用的地址，编译器自动分配1个字节。

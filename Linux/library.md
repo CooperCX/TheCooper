@@ -32,7 +32,7 @@
     ```
     gcc -c -fpic xxx.c xxx.c ...
     ```
-    * 使用gcc等到动态库
+    * 使用gcc得到动态库
     ```
     gcc -shared xxx.o xxx.o ... -o libxxx.so
     ```
@@ -46,7 +46,7 @@
     ldd 可执行文件名
     ```
 * 动态库加载
-    * 系统需要知道库的名字，以及绝对优势路径
+    * 系统需要知道库的名字，以及绝对路径
     * 系统的动态载入器ld-linux.so获取，依次搜索：
         * DT_RPATH段
         * LD_LIBRARY_PATH环境变量
