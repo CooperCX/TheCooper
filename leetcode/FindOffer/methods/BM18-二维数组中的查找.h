@@ -1,6 +1,6 @@
 #include <vector>
 
-class Solution {
+class findNumberIn2DArrayFindSolution {
 public:
     bool findNumberIn2DArrayFind(int target, std::vector<std::vector<int>> array) {
         if (array.size() == 0) {

@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 #include <cstddef>
 #include <cstring>
 
@@ -7,8 +7,9 @@ public:
     String() = default; // 预置函数
     String(const char* string) {  // 赋值构造, String string1("hello world");
         m_Size = strlen(string);
-        m_Data = new char[m_Size];
+        m_Data = new char[m_Size + 1];
         memcpy(m_Data, string, m_Size);
+        m_Data[m_Size] = '\0';
     }
     String(const String& other) {  // 拷贝构造, String string2(string1);
         m_Size = other.m_Size;
@@ -36,6 +37,16 @@ public:
             other.m_Size = 0;
             other.m_Data = nullptr;
         }
+        return *this;
+    }
+    String& append(const String& other) {
+        char* new_Data = new char[m_Size + other.m_Size + 1];
+        memcpy(new_Data, m_Data, m_Size);
+        memcpy(m_Data + sizeof(char) * m_Size, other.m_Data, other.m_Size);
+        m_Data[m_Size] = '\0';
+        m_Data = new_Data;
+        m_Size += other.m_Size;
+
         return *this;
     }
     ~String() {

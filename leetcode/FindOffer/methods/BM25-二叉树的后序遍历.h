@@ -1,7 +1,7 @@
 /*后序遍历：左-右-根*/
 
 #include <vector>
-#include "stack.h"
+#include "../include/stack.h"
 #include "../include/struct_define.h"
 
 //递归解法

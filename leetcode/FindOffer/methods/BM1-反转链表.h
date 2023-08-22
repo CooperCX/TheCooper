@@ -1,8 +1,9 @@
 #include "../include/struct_define.h"
 
 class reverseListSolution {
+public:
     /*迭代*/
-    ListNode* reverseList(ListNode* head) {
+    static ListNode* reverseList(ListNode* head) {
         ListNode* pre = nullptr;
         ListNode* cur = head;
         while (cur) {

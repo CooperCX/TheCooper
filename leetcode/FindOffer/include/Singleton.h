@@ -1,3 +1,5 @@
+#include <mutex>
+
 /*饿汉模式*/
 class Singleton1 {
 public:
@@ -6,7 +8,7 @@ public:
         return m_Instance;
     }
 private:
-    Singleton1() {}  
+    Singleton1() {}
     static Singleton1* m_Instance;
 };
 
@@ -18,10 +20,12 @@ public:
     Singleton2(const Singleton2* other) = delete;
     static Singleton2* Get() {
         if (m_Instance == nullptr) {
-            Singleton2* m_Instance = new Singleton2();
+            std::lock_guard<std::mutex> locker(mutex);
+            m_Instance = new Singleton2();
         }
         return m_Instance;
     }
+    static std::mutex mutex;
 private:
     Singleton2() {}
     static Singleton2* m_Instance;

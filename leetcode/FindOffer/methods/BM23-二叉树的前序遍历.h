@@ -25,7 +25,7 @@ public:
 };
 
 //栈
-class Solution {
+class preorderSolutionByStack {
 public:
     std::vector<int> preorderTraversal(TreeNode* root) {
         std::vector<int> results;

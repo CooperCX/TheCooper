@@ -1,6 +1,6 @@
 #include <vector>
 
-class Solution {
+class findInversePairsinArrayInversePairsSolution {
 public:
     int findInversePairsinArrayInversePairs(std::vector<int> data) {
         int n = data.size();

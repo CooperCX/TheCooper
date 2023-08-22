@@ -9,7 +9,7 @@
 */
 class reConstructBinaryTreeSolution {
 public:
-    TreeNode* reConstructBinaryTree(std::vector<int> pre, std::vector<int> vin) {
+    static TreeNode* reConstructBinaryTree(std::vector<int> pre, std::vector<int> vin) {
         if (pre.size() == 0 || vin.size() == 0) {
             return nullptr;
         }

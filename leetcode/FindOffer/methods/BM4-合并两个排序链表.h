@@ -1,8 +1,9 @@
 #include "../include/struct_define.h"
 
 class mergeListSolution {
+public:
     /*思路类似mergeSort*/
-    ListNode* mergeList(ListNode* l1, ListNode* l2) {
+    static ListNode* mergeList(ListNode* l1, ListNode* l2) {
         if (l1 == nullptr) {
             return l2;
         }
