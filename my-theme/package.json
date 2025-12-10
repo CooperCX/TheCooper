@@ -1,0 +1,19 @@
+{
+  "name": "my-theme",
+  "displayName": "Cooper Dark",
+  "description": "Custom color theme",
+  "version": "0.0.1",
+  "publisher": "self",
+  "engines": {
+    "vscode": "^1.0.0"
+  },
+  "contributes": {
+    "themes": [
+      {
+        "label": "Cooper Dark",
+        "uiTheme": "vs-dark",
+        "path": "./comate-colors.json"
+      }
+    ]
+  }
+}
