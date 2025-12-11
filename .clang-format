@@ -1,0 +1,23 @@
+Language:        Cpp
+# 基于 Google 风格 (行宽 80, 缩进 2, 大括号不换行)
+BasedOnStyle:    Google
+
+# --- 下面是个性化微调 (你可以根据喜好改) ---
+
+# 缩进宽度 (Google默认是2，很多C++项目习惯4，这里可以改)
+IndentWidth:     4
+
+# 指针/引用对齐方式: Left (*a), Right (a*), Middle ( * a)
+PointerAlignment: Left
+
+# 每行最大字符数 (Google默认80，现代屏幕通常设100或120)
+ColumnLimit:     120
+
+# 允许短函数写在一行 (如 int get() { return x; })
+AllowShortFunctionsOnASingleLine: Inline
+
+# switch 语句中的缩进
+IndentCaseLabels: true
+
+# 包含头文件的排序规则 (按字母序)
+SortIncludes:    true
