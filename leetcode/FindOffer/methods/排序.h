@@ -1,12 +1,12 @@
 #pragma once
 
-#include <vector>
 #include <algorithm>
 #include <cmath>
+#include <utility>
+#include <vector>
 class Sort {
-public:
-
-    /*冒泡排序：将最大元素放到最后*/
+   public:
+    /*冒泡排序：每一次循环将最大的放在最后*/
     static void bubbleSort(std::vector<int>& numbers) {
         int n = numbers.size();
         for (int k = 0; k < n - 1; k++) {
@@ -23,9 +23,12 @@ public:
         }
     }
 
-    /*插入排序：将当前元素插入到应在的位置*/
+    /*插入排序：将当前元素插入到应在的位置，就是让前面没有比当前元素更大的*/
     static void insertionSort(std::vector<int>& numbers) {
         int n = numbers.size();
+        if (n <= 1) {
+            return;
+        }
         for (int k = 1; k < n; k++) {
             int key = numbers[k];
             int i = k - 1;
@@ -39,49 +42,88 @@ public:
 
     /*归并排序：将数组对分，排序后再归并*/
     static void mergeSort(std::vector<int>& numbers) {
-        int n = numbers.size(); // implicit
+        int n = numbers.size();  // implicit
         std::vector<int> temp(n, 0);
         mergeSortCore(numbers, temp, 0, n - 1);
     }
 
-private:
-
-    /*归并排序辅助函数*/
+   private:
+    /*归并排序核心逻辑：分治与合并
+     * 范围：[start, end] (左闭右闭)
+     */
     static void mergeSortCore(std::vector<int>& numbers, std::vector<int>& temp, int start, int end) {
+        // 1. 递归终止条件：
+        // 当区间长度为0或1时，认为已经有序，直接返回
         if (start >= end) {
             return;
         }
-        int mid = start + (end - start) / 2;
-        int lstart = start, lend = mid, rstart = mid + 1, rend = end;
-        mergeSortCore(numbers, temp, lstart, lend);
-        mergeSortCore(numbers, temp, rstart, rend);
 
-        int index = start;
-        while (lstart <= lend && rstart <= rend) {
-            temp[index++] = (numbers[lstart] < numbers[rstart]) ? numbers[lstart++] : numbers[rstart++];
+        // 2. 分解 (Divide)：
+        // 找到中点，将数组切割成左右两半
+        int mid = start + (end - start) / 2;
+
+        // 3. 治 (Conquer)：
+        // 递归地对左右两个子区间进行排序
+        // 左区间: [start, mid]
+        // 右区间: [mid + 1, end]
+        mergeSortCore(numbers, temp, start, mid);
+
+        // 4. 合并 (Merge)：
+        // 将两个已经有序的子区间，合并到辅助数组 temp 中
+        int i = start;    // 左子区间的起始位置
+        int j = mid + 1;  // 右子区间的起始位置
+        int k = start;    // temp 数组的当前填写入位置
+
+        while (i <= mid && j <= end) {
+            // [稳定性关键]
+            // 当左右两边元素相等时 (numbers[i] == numbers[j])，
+            // 必须优先选择左边的元素 (numbers[i])。
+            // 这样才能保证相同元素在排序后的相对前后顺序不变（即稳定性）。
+            if (numbers[i] <= numbers[j]) {
+                temp[k++] = numbers[i++];
+            } else {
+                temp[k++] = numbers[j++];
+            }
         }
-        while (lstart <= lend) {
-            temp[index++] = numbers[lstart++];
+
+        // 处理左边剩余的元素
+        while (i <= mid) {
+            temp[k++] = numbers[i++];
         }
-        while (rstart <= rend) {
-            temp[index++] = numbers[rstart++];
+
+        // 处理右边剩余的元素
+        while (j <= end) {
+            temp[k++] = numbers[j++];
         }
-        for (int i = start; i <= end; i++) {
-            numbers[i] = temp[i];
+
+        // 5. 还原：
+        // 将合并好的有序数据，从 temp 拷贝回原数组 numbers
+        for (int idx = start; idx <= end; idx++) {
+            numbers[idx] = temp[idx];
         }
     }
 
-public:
+   public:
     /*基数排序：依次对元素个十百位上的数字进行排序*/
     static void radixSort(std::vector<int>& numbers) {
+        if (numbers.empty()) {
+            return;
+        }
         int n = numbers.size();
+        std::vector<int> temp(n, 0);
+        int minNum = *std::min_element(numbers.begin(), numbers.end());
+        // 如果有负数，后面的k会为负数，导致数组越界
+        if (minNum < 0) {
+            for (int& num : numbers) {
+                num -= minNum;
+            }
+        }
         int maxNum = *std::max_element(numbers.begin(), numbers.end());
-        std::vector<int> temp(n);
-        int radix = 1;
+        long long radix = 1;  // 当前排序时的位数，初始1是个位；避免int溢出
         while (radix <= maxNum) {
             std::vector<int> count(10, 0);
             for (int i = 0; i < n; i++) {
-                int k = (numbers[i] / radix) % 10;
+                int k = (numbers[i] / radix) % 10;  // 取当前位数上的值
                 count[k]++;
             }
             for (int i = 1; i < 10; i++) {
@@ -96,9 +138,14 @@ public:
             }
             radix *= 10;
         }
+        if (minNum < 0) {
+            for (int& num : numbers) {
+                num += minNum;
+            }
+        }
     }
 
-/*-------------------👆稳定排序：相同大小的元素的前后顺序在排序后没有改变👆----------------------*/
+    /*-------------------👆稳定排序：相同大小的元素的前后顺序在排序后没有改变👆----------------------*/
 
     /*选择排序：选择当前元素后面的最小元素，并交换*/
     static void selectionSort(std::vector<int>& numbers) {
@@ -171,7 +218,7 @@ public:
         }
     }
 
-private:
+   private:
     /*堆排序辅助函数*/
     static void heapify(std::vector<int>& numbers, int n, int i) {
         int left = i * 2 + 1, right = i * 2 + 2;
@@ -188,7 +235,7 @@ private:
         }
     }
 
-public:
+   public:
     /*计数排序：记录每个元素出现的次数*/
     static void countSort(std::vector<int>& numbers) {
         int n = numbers.size();

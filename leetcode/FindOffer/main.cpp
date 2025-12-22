@@ -1,9 +1,10 @@
 #include <iostream>
-#include "./methods/排序.h"
+
 #include "./methods/printVector.h"
+#include "./methods/排序.h"
 
 int main() {
-    std::vector<int> values = {1, 2, 5, 3, 4, 8, 7, 6};
-    Sort::bucketSort(values, 4);
+    std::vector<int> values = {19, 30, 5, 61, 7, 16};
+    Sort::radixSort(values);
     printVector<int>(values);
 }
