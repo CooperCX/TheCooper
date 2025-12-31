@@ -208,7 +208,7 @@ class Sort {
     /*堆排序*/
     static void heapSort(std::vector<int>& numbers) {
         int n = numbers.size();
-        // 初始化
+        // 初始化，建立一个大顶堆，从最后一个非叶子节点开始
         for (int i = (n - 2) / 2; i >= 0; i--) {
             heapify(numbers, n, i);
         }
@@ -223,10 +223,10 @@ class Sort {
     static void heapify(std::vector<int>& numbers, int n, int i) {
         int left = i * 2 + 1, right = i * 2 + 2;
         int max = i;
-        while (left < n && numbers[left] > numbers[max]) {
+        if (left < n && numbers[left] > numbers[max]) {
             max = left;
         }
-        while (right < n && numbers[right] > numbers[max]) {
+        if (right < n && numbers[right] > numbers[max]) {
             max = right;
         }
         if (max != i) {
@@ -239,15 +239,21 @@ class Sort {
     /*计数排序：记录每个元素出现的次数*/
     static void countSort(std::vector<int>& numbers) {
         int n = numbers.size();
-        int vecSize = *std::max_element(numbers.begin(), numbers.end()) + 1;
+        if (n <= 1) {
+            return;
+        }
+        int minNum = *std::min_element(numbers.begin(), numbers.end());
+        int maxNum = *std::max_element(numbers.begin(), numbers.end());
+        int vecSize = maxNum - minNum + 1;
         std::vector<int> vec(vecSize, 0);
         for (int i = 0; i < n; i++) {
-            vec[numbers[i]]++;
+            vec[numbers[i] - minNum]++;
         }
-        numbers.clear();
+        int index = 0;
         for (int i = 0; i < vecSize; i++) {
-            if ((vec[i]--) > 0) {
-                numbers.push_back(i);
+            while ((vec[i]) > 0) {
+                numbers[index++] = i + minNum;
+                vec[i]--;
             }
         }
     }
@@ -255,18 +261,26 @@ class Sort {
     /*桶排序：将数组分成bucketSize个桶，每个桶使用插入排序*/
     static void bucketSort(std::vector<int>& numbers, int bucketCount) {
         int n = numbers.size();
+        if (n <= 1 || bucketCount <= 0) {
+            return;
+        }
         int minNum = *std::min_element(numbers.begin(), numbers.end());
         int maxNum = *std::max_element(numbers.begin(), numbers.end());
+        if (minNum == maxNum) {
+            return;
+        }
         int bucketSize = std::floor(maxNum - minNum) / bucketCount + 1;
         std::vector<std::vector<int>> buckets(bucketCount);
         for (int i = 0; i < n; i++) {
             buckets[(numbers[i] - minNum) / bucketSize].push_back(numbers[i]);
         }
-        numbers.clear();
+        int idx = 0;
         for (int i = 0; i < bucketCount; i++) {
-            insertionSort(buckets[i]);
-            for (int j = 0; j < bucketSize; j++) {
-                numbers.push_back(buckets[i][j]);
+            if (!buckets[i].empty()) {
+                insertionSort(buckets[i]);
+                for (int j = 0; j < buckets[i].size(); j++) {
+                    numbers[idx++] = buckets[i][j];
+                }
             }
         }
     }
