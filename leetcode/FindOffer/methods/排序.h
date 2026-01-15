@@ -67,6 +67,7 @@ class Sort {
         // 左区间: [start, mid]
         // 右区间: [mid + 1, end]
         mergeSortCore(numbers, temp, start, mid);
+        mergeSortCore(numbers, temp, mid + 1, end);
 
         // 4. 合并 (Merge)：
         // 将两个已经有序的子区间，合并到辅助数组 temp 中
@@ -157,7 +158,9 @@ class Sort {
                     min_index = j;
                 }
             }
-            std::swap(numbers[i], numbers[min_index]);
+            if (i != min_index) {
+                std::swap(numbers[i], numbers[min_index]);
+            }
         }
     }
 
@@ -166,14 +169,14 @@ class Sort {
         int n = numbers.size();
         int gap = n / 2;
         while (gap > 0) {
-            for (int i = gap; i < n; i++) {
-                int j = i - gap;
-                int key = numbers[i];
-                while (j >= 0 && numbers[j] > numbers[i]) {
-                    numbers[j + gap] = numbers[j];
-                    j -= gap;
+            for (int k = gap; k < n; k++) {
+                int key = numbers[k];
+                int i = k - gap;
+                while (i >= 0 && numbers[i] > key) {
+                    numbers[i + gap] = numbers[i];
+                    i -= gap;
                 }
-                numbers[j + gap] = key;
+                numbers[i + gap] = key;
             }
             gap /= 2;
         }
@@ -251,7 +254,7 @@ class Sort {
         }
         int index = 0;
         for (int i = 0; i < vecSize; i++) {
-            while ((vec[i]) > 0) {
+            while (vec[i] > 0) {
                 numbers[index++] = i + minNum;
                 vec[i]--;
             }
@@ -274,12 +277,12 @@ class Sort {
         for (int i = 0; i < n; i++) {
             buckets[(numbers[i] - minNum) / bucketSize].push_back(numbers[i]);
         }
-        int idx = 0;
+        int index = 0;
         for (int i = 0; i < bucketCount; i++) {
             if (!buckets[i].empty()) {
                 insertionSort(buckets[i]);
                 for (int j = 0; j < buckets[i].size(); j++) {
-                    numbers[idx++] = buckets[i][j];
+                    numbers[index++] = buckets[i][j];
                 }
             }
         }
