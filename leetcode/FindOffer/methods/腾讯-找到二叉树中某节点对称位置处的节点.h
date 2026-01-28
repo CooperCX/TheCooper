@@ -1,24 +1,24 @@
-#include <vector>
+#pragma once
 #include <algorithm>
+#include <cstddef>
 #include <queue>
+#include <utility>
+#include <vector>
 
-struct TreeNode
-{
-    int val;
+// 二叉树结构
+struct TreeNode {
+    int val = 0;
     TreeNode* leftChild = nullptr;
     TreeNode* rightChild = nullptr;
 
-    TreeNode(int val) :
-        val(val), leftChild(nullptr), rightChild(nullptr)
-    {
-    }
+    TreeNode(int val) : val(val), leftChild(nullptr), rightChild(nullptr) {}
 };
 
-std::vector<std::vector<TreeNode*>> levelOrder(TreeNode* root) {
+// 二叉树的层序遍历
+inline std::vector<std::vector<TreeNode*>> levelOrder(TreeNode* root) {
     std::vector<std::vector<TreeNode*>> results;
-    if (root == nullptr) {
-        return results;
-    }
+    if (nullptr == root) return results;
+
     std::queue<TreeNode*> q;
     q.push(root);
     while (!q.empty()) {
@@ -29,43 +29,59 @@ std::vector<std::vector<TreeNode*>> levelOrder(TreeNode* root) {
             temp.push_back(node);
             q.pop();
             len--;
-            q.push(node->leftChild);
-            q.push(node->rightChild);
+            if (node->leftChild) q.push(node->leftChild);
+            if (node->rightChild) q.push(node->rightChild);
         }
         results.push_back(temp);
     }
     return results;
 }
 
-void MirrorCore(TreeNode* root) {
-    if (root == nullptr) {
+// 二叉树的镜像翻转
+inline void mirrorCore(TreeNode* root) {
+    if (nullptr == root) {
         return;
     }
-    TreeNode* temp = root->leftChild;
-    root->leftChild = root->rightChild;
-    root->rightChild = temp;
-    MirrorCore(root->leftChild);
-    MirrorCore(root->rightChild);
+    std::swap(root->leftChild, root->rightChild);
+    mirrorCore(root->leftChild);
+    mirrorCore(root->rightChild);
 }
 
-TreeNode* Mirror(TreeNode* root) {
-    MirrorCore(root);
-    return root;
+// 如果不允许使用递归（防止栈溢出）
+inline void mirrorCoreIterative(TreeNode* root) {
+    if (nullptr == root) {
+        return;
+    }
+    std::queue<TreeNode*> q;
+    q.push(root);
+
+    while (!q.empty()) {
+        TreeNode* node = q.front();
+        q.pop();
+        std::swap(node->leftChild, node->rightChild);
+        if (node->leftChild) q.push(node->leftChild);
+        if (node->rightChild) q.push(node->rightChild);
+    }
 }
 
-TreeNode* findSymmetrical(TreeNode* root, TreeNode* node) {
-    std::vector<std::vector<TreeNode*>> inorderVector1 = levelOrder(root);
-    int row = 0, col = 0;
-    for (int i = 0; i < inorderVector1.size(); i++) {
-        for (int j = 0; j < inorderVector1[i].size(); j++) {
-            if (inorderVector1[i][j] == node) {
-                row = i;
-                col = j;
-            }
-        }
+// 找到二叉树中某节点的对称位置节点
+inline TreeNode* findSymmetricalRecursive(TreeNode* p1, TreeNode* p2, TreeNode* node) {
+    if (nullptr == p1 || nullptr == p2) {
+        return nullptr;
     }
 
-    TreeNode* mirrorRoot = Mirror(root);
-    std::vector<std::vector<TreeNode*>> inorderVector2 = levelOrder(mirrorRoot);
-    return inorderVector2[row][col];
+    if (node == p1) {
+        return p2;
+    }
+    if (node == p2) {
+        return p1;
+    }
+
+    TreeNode* res = findSymmetricalRecursive(p1->leftChild, p2->rightChild, node);
+    if (nullptr != res) return res;
+    return findSymmetricalRecursive(p1->rightChild, p2->leftChild, node);
+}
+
+inline TreeNode* findSymmetrical(TreeNode* root, TreeNode* node) {
+    return findSymmetricalRecursive(root, root, node);
 }
