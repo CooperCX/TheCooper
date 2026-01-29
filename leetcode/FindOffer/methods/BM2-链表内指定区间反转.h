@@ -1,8 +1,7 @@
 #include "../include/struct_define.h"
 
 class reverseBetweenSolution {
-public:
-
+   public:
     ListNode* reverseBetween(ListNode* head, int m, int n) {
         // write code here
         ListNode* dummy = new ListNode(-1);
@@ -15,6 +14,7 @@ public:
             cur = cur->next;
         }
 
+        // 头插法：cur 在整个反转过程中保持不动，我们只是不断地把它后面的节点“拔”下来，插到 pre 的后面
         for (int i = m; i < n; i++) {
             ListNode* post = cur->next;
             cur->next = post->next;
