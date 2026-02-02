@@ -16,6 +16,7 @@ class FindKthToTailSolution {
             slowNode = slowNode->next;
             pListHead = pListHead->next;
         }
+
         return slowNode;
     }
 };

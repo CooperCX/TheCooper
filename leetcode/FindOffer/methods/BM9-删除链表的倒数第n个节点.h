@@ -1,27 +1,30 @@
 #include "../include/struct_define.h"
 
 class removeNthFromEndSolution {
-public:
-
+   public:
     ListNode* removeNthFromEnd(ListNode* head, int n) {
-        ListNode* dummy = new ListNode(-1);
-        dummy->next = head;
+        ListNode dummy = ListNode(-1);
+        dummy.next = head;
 
-        ListNode* pre = dummy;
+        ListNode* pre = &dummy;
         ListNode* slow = head;
         ListNode* fast = head;
-        while (n) {
-            fast = fast->next;
+
+        while (n > 0) {
+            if (fast) {
+                fast = fast->next;
+            } else {
+                return nullptr;
+            }
             n--;
         }
-        while (fast != nullptr) {
+        while (fast) {
+            pre = pre->next;
             slow = slow->next;
             fast = fast->next;
-            pre = pre->next;
         }
+
         pre->next = slow->next;
-
-        return dummy->next;
+        return dummy.next;
     }
-
 };

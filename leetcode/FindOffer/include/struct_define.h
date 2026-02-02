@@ -5,6 +5,10 @@ struct ListNode {
     ListNode(int val) : val(val), next(nullptr) {}
 };
 
+struct compareListNode {
+    bool operator()(ListNode* a, ListNode* b) { return a->val > b->val; }
+};
+
 /*复杂链表节点*/
 struct RandomListNode {
     int val;

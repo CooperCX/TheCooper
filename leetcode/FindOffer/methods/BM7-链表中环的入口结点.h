@@ -1,24 +1,22 @@
 #include <unordered_map>
+
 #include "../include/struct_define.h"
 
 class EntryNodeOfLoopSolution {
-public:
+   public:
     // 快慢指针
-    ListNode* EntryNodeOfLoop(ListNode* pHead) {
-        if (pHead == nullptr || pHead->next == nullptr) {
-            return nullptr;
-        }
-        ListNode* fast = pHead, * slow = pHead;
-        while (fast != nullptr && fast->next != nullptr) {
+    ListNode* EntryNodeOfLoopTwoPointer(ListNode* pHead) {
+        if (pHead == nullptr || pHead->next == nullptr) return nullptr;
+
+        ListNode *fast = pHead, *slow = pHead;
+        while (fast && fast->next) {
             fast = fast->next->next;
             slow = slow->next;
-            if (fast == slow) {
-                break;
-            }
+            if (fast == slow) break;
         }
-        if (fast == nullptr || fast->next == nullptr) {
-            return nullptr;
-        }
+
+        if (fast == nullptr || fast->next == nullptr) return nullptr;
+
         slow = pHead;
         while (slow != fast) {
             slow = slow->next;
