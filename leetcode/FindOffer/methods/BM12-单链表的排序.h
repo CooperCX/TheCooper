@@ -1,22 +1,22 @@
-#include "../include/struct_define.h"
 #include "BM4-合并两个排序链表.h"
 
 class sortInSingleListSolution {
-public:
-
+   public:
     ListNode* sortInList(ListNode* head) {
-        if (head == nullptr || head->next == nullptr) {
-            return head;
+        if (!head || !head->next) return head;
+
+        ListNode* prev = nullptr;
+        ListNode* slow = head;
+        ListNode* fast = head;
+
+        while (fast && fast->next) {
+            prev = slow;
+            slow = slow->next;
+            fast = fast->next->next;
         }
-        ListNode* left = head;
-        ListNode* mid = head->next;
-        ListNode* right = head->next->next;
-        while (right != nullptr && right->next != nullptr) {
-            left = left->next;
-            mid = mid->next;
-            right = right->next->next;
-        }
-        left->next = nullptr;
-        return mergeListSolution::mergeList(sortInList(head), sortInList(mid));
+
+        if (prev) prev->next = nullptr;
+
+        return mergeListSolution::mergeList(sortInList(head), sortInList(slow));
     }
 };

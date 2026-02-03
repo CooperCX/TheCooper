@@ -1,26 +1,22 @@
 #include "../include/struct_define.h"
 
 class deleteDuplicates1Solution {
-  public:
-
+   public:
     ListNode* deleteDuplicates(ListNode* head) {
-        if (head == nullptr || head->next == nullptr) {
-            return head;
-        }
-        auto dummy = new ListNode(-1);
-        dummy->next = head;
-        auto cur = dummy->next;
+        if (!head || !head->next) return head;
 
-        while (cur->next != nullptr) {
-            if (cur->val == cur->next->val) {
-                int temp = cur->val;
-                while (cur->next != nullptr && cur->next->val == temp) {
-                    cur->next = cur->next->next;
-                }
+        ListNode* cur = head;
+
+        while (cur && cur->next) {
+            if (cur->next->val == cur->val) {
+                ListNode* delete_code = cur->next;
+                cur->next = cur->next->next;
+                delete delete_code;
             } else {
                 cur = cur->next;
             }
         }
-        return dummy->next;
+
+        return head;
     }
 };

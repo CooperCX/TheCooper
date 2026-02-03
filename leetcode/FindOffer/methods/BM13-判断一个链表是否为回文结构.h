@@ -1,23 +1,35 @@
-#include "../include/struct_define.h"
 #include <vector>
 
-class isPailSolution {
-public:
+#include "../include/struct_define.h"
 
+class isPailSolution {
+   public:
     bool isPail(ListNode* head) {
         // write code here
-        std::vector<int> numbers;
-        while (head != nullptr) {
-            numbers.push_back(head->val);
-            head = head->next;
+        if (!head || !head->next) return true;
+
+        ListNode* slow = head;
+        ListNode* fast = head;
+
+        while (fast && fast->next) {
+            slow = slow->next;
+            fast = fast->next->next;
         }
-        int left = 0, right = numbers.size() - 1;
-        while (left < right) {
-            if (numbers[left] != numbers[right]) {
-                return false;
-            }
-            left++;
-            right--;
+
+        // ListNode* head2 = reverseListNode(slow);
+        ListNode* head2 = nullptr;
+        ListNode* cur = slow;
+        while (cur) {
+            ListNode* post = cur->next;
+            cur->next = head2;
+            head2 = cur;
+            cur = post;
+        }
+
+        while (head2) {
+            if (head->val != head2->val) return false;
+            head = head->next;
+            head2 = head2->next;
         }
         return true;
     }

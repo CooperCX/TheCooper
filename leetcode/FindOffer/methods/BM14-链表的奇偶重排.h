@@ -1,35 +1,24 @@
 #include "../include/struct_define.h"
 
-
 class oddEvenListSolution {
-public:
-
+   public:
     ListNode* oddEvenList(ListNode* head) {
-        if (head == nullptr || head->next == nullptr) {
-            return head;
-        }
+        if (!head || !head->next) return head;
+
         ListNode* odd = head;
-        auto oddhead = odd;
-        ListNode* even = head->next;
-        auto evenhead = even;
+        ListNode* even_head = head->next;
+        ListNode* even = even_head;
 
-        int index = 3;
-        head = head->next->next;
-        while (head != nullptr) {
-            if (index & 1) {
-                odd->next = head;
-                odd = odd->next;
-            } else {
-                even->next = head;
-                even = even->next;
-            }
-            head = head->next;
-            index++;
+        while (even && even->next) {
+            odd->next = even->next;
+            odd = odd->next;
+
+            even->next = odd->next;
+            even = even->next;
         }
 
-        even->next = nullptr;
-        odd->next = evenhead;
+        odd->next = even_head;
 
-        return oddhead;
+        return head;
     }
 };
