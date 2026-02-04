@@ -1,41 +1,41 @@
+#include <ctime>
 #include <vector>
 
-class findInversePairsinArrayInversePairsSolution {
-public:
-    int findInversePairsinArrayInversePairs(std::vector<int> data) {
+class InversePairsSolution {
+   public:
+    int reversePairs(std::vector<int>& data) {
+        if (data.empty()) return 0;
         int n = data.size();
         std::vector<int> temp(n, 0);
-        return InversePairsCore(data, temp, 0, n - 1);
+        return static_cast<int>(mergeSortAndCount(data, temp, 0, n - 1));
     }
-private:
-    int InversePairsCore(std::vector<int>& data, std::vector<int>& temp, int begin, int end) {
-        if (begin >= end) {
-            return 0;
-        }
-        int mid = begin + (end - begin) / 2;
-        int lbegin = begin, lend = mid, rbegin = mid + 1, rend = end;
-        int left = InversePairsCore(data, temp, lbegin, lend);
-        int right = InversePairsCore(data, temp, rbegin, rend);
-        int res = 0;
-        for (int i = begin; i <= end; i++) {
-            temp[i] = data[i];
-        }
-        int index = begin;
-        while (lbegin <= lend && rbegin <= rend) {
-            if (temp[lbegin] < temp[rbegin]) {
-                data[index++] = temp[lbegin++];
+
+   private:
+    long long mergeSortAndCount(std::vector<int>& data, std::vector<int>& temp, int start, int end) {
+        if (start >= end) return 0;
+
+        int mid = start + (end - start) / 2;
+
+        long long count =
+            (mergeSortAndCount(data, temp, start, mid) + mergeSortAndCount(data, temp, mid + 1, end)) % 1000000007;
+
+        int i = start, j = mid + 1, k = start;
+        while (i <= mid && j <= end) {
+            if (data[i] <= data[j]) {
+                temp[k++] = data[i++];
             } else {
-                data[index++] = temp[rbegin++];
-                res += (lend - lbegin + 1);
-                res %= 1000000007;
+                temp[k++] = data[j++];
+                count += mid - i + 1;
             }
         }
-        while (lbegin <= lend) {
-            data[index++] = temp[lbegin++];
+
+        while (i <= mid) temp[k++] = data[i++];
+        while (j <= end) temp[k++] = data[j++];
+
+        for (int p = start; p <= end; p++) {
+            data[p] = temp[p];
         }
-        while (rbegin <= rend) {
-            data[index++] = temp[rbegin++];
-        }
-        return (left + right + res) % 1000000007;
+
+        return count;
     }
 };

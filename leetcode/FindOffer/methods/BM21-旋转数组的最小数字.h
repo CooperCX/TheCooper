@@ -1,22 +1,22 @@
 #include <vector>
 
 class minNumberInRotateArraySolution {
-public:
+   public:
     int minNumberInRotateArray(std::vector<int> rotateArray) {
-        if (rotateArray.size() == 0) {
-            return 0;
-        }
-        int low = 0, high = rotateArray.size() - 1;
-        while(high - low > 1) {
-            int mid = low + (high - low) / 2;
-            if (rotateArray[mid] < rotateArray[high]) {
-                high = mid;
-            } else if (rotateArray[mid] > rotateArray[high]) {
-                low = mid;
+        if (rotateArray.empty()) return 0;
+
+        int start = 0, end = rotateArray.size() - 1;
+        while (start < end) {
+            int mid = start + (end - start) / 2;
+            if (rotateArray[mid] > rotateArray[end]) {
+                start = mid + 1;
+            } else if (rotateArray[mid] < rotateArray[end]) {
+                end = mid;
             } else {
-                high--;
+                end--;
             }
         }
-        return std::min(rotateArray[low], rotateArray[high]);
+
+        return rotateArray[start];
     }
 };

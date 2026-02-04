@@ -1,17 +1,19 @@
 #include <vector>
 
 class BiSearchSolution {
-public:
-
+   public:
     int search(std::vector<int>& nums, int target) {
+        if (nums.empty()) return -1;
+
         int n = nums.size();
-        int left = 0, right = n - 1;
-        while (left <= right) {
-            int mid = (right - left) / 2 + left;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
+
+        int start = 0, end = n - 1;
+        while (start <= end) {
+            int mid = start + (end - start) / 2;
+            if (nums[mid] < target) {
+                start = mid + 1;
+            } else if (nums[mid] > target) {
+                end = mid - 1;
             } else {
                 return mid;
             }
