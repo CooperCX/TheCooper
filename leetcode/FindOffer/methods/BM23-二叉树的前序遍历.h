@@ -1,17 +1,15 @@
 /*前序遍历：根-左-右*/
 
 #include <vector>
+
 #include "../include/stack.h"
 #include "../include/struct_define.h"
 
-
 // 递归
 class preorderSolution {
-public:
+   public:
     void preorder(TreeNode* root, std::vector<int>& res) {
-        if (root == nullptr) {
-            return;
-        }
+        if (root == nullptr) return;
         res.emplace_back(root->val);
         preorder(root->left, res);
         preorder(root->right, res);
@@ -24,26 +22,22 @@ public:
     }
 };
 
-//栈
+// 栈
 class preorderSolutionByStack {
-public:
+   public:
     std::vector<int> preorderTraversal(TreeNode* root) {
         std::vector<int> results;
-        if (root == nullptr) {
-            return results;
-        }
+        if (!root) return results;
+
         stack<TreeNode*> s;
         s.push(root);
-        while(!s.empty()) {
+        while (!s.empty()) {
             TreeNode* node = s.top();
-            results.emplace_back(node->val);
+            results.push_back(node->val);
             s.pop();
-            if(node->right) {
-                s.push(node->right);
-            }
-            if(node->left) {
-                s.push(node->left);
-            }
+
+            if (node->right) s.push(node->right);
+            if (node->left) s.push(node->left);
         }
         return results;
     }

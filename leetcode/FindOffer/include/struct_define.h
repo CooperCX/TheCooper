@@ -20,7 +20,7 @@ struct RandomListNode {
 
 /*二叉树节点*/
 struct TreeNode {
-    int val;
+    int val = 0;
     TreeNode* left = nullptr;
     TreeNode* right = nullptr;
 
