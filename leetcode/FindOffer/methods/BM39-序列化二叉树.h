@@ -1,47 +1,61 @@
-#include "../include/struct_define.h"
 #include <string>
 
-class SerializeTreeSolution {
-public:
-    char* Serialize(TreeNode* root) {
-        std::string str = SerializeCore(root);
-        char* res = new char[str.length()];
-        for (int i = 0; i < str.length(); i++) {
-            res[i] = str[i];
-        }
-        return res;
-    }
+#include "../include/struct_define.h"
 
-    std::string SerializeCore(TreeNode* root) {
-        std::string str = "";
-        if (root == nullptr) {
+class SerializeTreeSolution {
+   public:
+    // Encodes a tree to a single string.
+    std::string serialize(TreeNode* root) {
+        std::string str;
+        if (!root) {
             str += "#!";
             return str;
         }
-        str += (std::to_string(root->val) + "!");
-        str += SerializeCore(root->left);
-        str += SerializeCore(root->right);
+
+        str += std::to_string(root->val) + "!";
+        str += serialize(root->left);
+        str += serialize(root->right);
+
         return str;
     }
 
-    TreeNode* Deserialize(char* str) {
-        return DeserializeCore(str);
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(std::string data) {
+        if (data.empty()) return nullptr;
+
+        int idx = 0;
+        return deserializeCore(data, idx);
     }
 
-    TreeNode* DeserializeCore(char*& str) {
-        if (*str == '#') {
-            str++;
+    TreeNode* deserializeCore(const std::string& data, int& idx) {
+        if (idx >= data.size()) return nullptr;
+
+        if ('#' == data[idx]) {
+            idx += 2;
             return nullptr;
         }
-        int num = 0;
-        while (*str != '!') {
-            num = num * 10 + (*str - '0');
-            str++;
-        }
-        TreeNode* root = new TreeNode(num);
-        root->left = DeserializeCore(++str);
-        root->right = DeserializeCore(++str);
 
-        return root;
+        int num = 0;
+        bool is_negative = false;
+
+        if (data[idx] == '-') {
+            is_negative = true;
+            idx++;
+        }
+
+        while (idx < data.size() && data[idx] != '!') {
+            num = num * 10 + (data[idx] - '0');
+            idx++;
+        }
+
+        if (is_negative) num = -num;
+
+        idx++;
+
+        TreeNode* node = new TreeNode(num);
+        node->left = deserializeCore(data, idx);
+        node->right = deserializeCore(data, idx);
+
+        return node;
     }
 };

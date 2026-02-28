@@ -1,20 +1,36 @@
-#include "../include/struct_define.h"
+#include <queue>
+#include <utility>
 
+#include "../include/struct_define.h"
 class MirrorTreeSolution {
-public:
+   public:
     TreeNode* Mirror(TreeNode* pRoot) {
-        MirrorCore(pRoot);
+        if (!pRoot) return nullptr;
+
+        std::swap(pRoot->left, pRoot->right);
+
+        Mirror(pRoot->left);
+        Mirror(pRoot->right);
+
         return pRoot;
     }
-private:
-    void MirrorCore(TreeNode* pRoot) {
-        if (pRoot == nullptr) {
-            return;
+
+    TreeNode* invertTree(TreeNode* root) {
+        if (!root) return nullptr;
+
+        std::queue<TreeNode*> q;
+        q.push(root);
+
+        while (!q.empty()) {
+            TreeNode* node = q.front();
+            q.pop();
+
+            std::swap(node->left, node->right);
+
+            if (node->left) q.push(node->left);
+            if (node->right) q.push(node->right);
         }
-        TreeNode* pTemp = pRoot->left;
-        pRoot->left = pRoot->right;
-        pRoot->right = pTemp;
-        MirrorCore(pRoot->left);
-        MirrorCore(pRoot->right);
+
+        return root;
     }
 };

@@ -1,19 +1,15 @@
 #include "../include/struct_define.h"
 
 class mergeTreesSolution {
-public:
+   public:
+    TreeNode* mergeTrees(TreeNode* root1, TreeNode* root2) {
+        if (!root1) return root2;
+        if (!root2) return root1;
 
-    TreeNode* mergeTrees(TreeNode* t1, TreeNode* t2) {
-        if (t1 == nullptr) {
-            return t2;
-        }
-        if (t2 == nullptr) {
-            return t1;
-        }
-        auto res = new TreeNode(t1->val + t2->val);
-        res->left = mergeTrees(t1->left, t2->left);
-        res->right = mergeTrees(t1->right, t2->right);
+        root1->val += root2->val;
+        root1->left = mergeTrees(root1->left, root2->left);
+        root1->right = mergeTrees(root1->right, root2->right);
 
-        return res;
+        return root1;
     }
 };

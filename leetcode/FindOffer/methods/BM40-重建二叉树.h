@@ -1,5 +1,7 @@
-#include <vector>
 #include <algorithm>
+#include <unordered_map>
+#include <vector>
+
 #include "../include/struct_define.h"
 
 /*
@@ -8,24 +10,33 @@
 分别重建左子树和右子树
 */
 class reConstructBinaryTreeSolution {
-public:
-    static TreeNode* reConstructBinaryTree(std::vector<int> pre, std::vector<int> vin) {
-        if (pre.size() == 0 || vin.size() == 0) {
-            return nullptr;
+   public:
+    TreeNode* buildTree(std::vector<int>& preorder, std::vector<int>& inorder) {
+        if (preorder.empty() || inorder.empty() || preorder.size() != inorder.size()) return nullptr;
+
+        std::unordered_map<int, int> inorder_map;
+        for (int i = 0; i < inorder.size(); i++) {
+            inorder_map[inorder[i]] = i;
         }
 
-        TreeNode* root = new TreeNode(pre[0]);
-        auto iter = std::find(vin.begin(), vin.end(), pre[0]);
-        int root_index = std::distance(vin.begin(), iter);
+        return reConstructBinaryTree(preorder, 0, preorder.size() - 1, inorder, 0, inorder.size() - 1, inorder_map);
+    }
 
-        std::vector<int> left_pre(pre.begin() + 1, pre.begin() + root_index + 1);
-        std::vector<int> right_pre(pre.begin() + root_index + 1, pre.end());
+    TreeNode* reConstructBinaryTree(const std::vector<int>& preorder, int pre_left, int pre_right,
+                                    const std::vector<int>& inorder, int vin_left, int vin_right,
+                                    const std::unordered_map<int, int>& inorder_map) {
+        if (pre_left > pre_right) return nullptr;
 
-        std::vector<int> left_vin(vin.begin(), vin.begin() + root_index);
-        std::vector<int> right_vin(vin.begin() + root_index + 1, vin.end());
+        int root_val = preorder[pre_left];
+        TreeNode* root = new TreeNode(root_val);
 
-        root->left = reConstructBinaryTree(left_pre, left_vin);
-        root->right = reConstructBinaryTree(right_pre, right_vin);
+        int root_index_in_inorder = inorder_map.at(root_val);
+        int left_tree_size = root_index_in_inorder - vin_left;
+
+        root->left = reConstructBinaryTree(preorder, pre_left + 1, pre_left + left_tree_size, inorder, vin_left,
+                                           root_index_in_inorder - 1, inorder_map);
+        root->right = reConstructBinaryTree(preorder, pre_left + left_tree_size + 1, pre_right, inorder,
+                                            root_index_in_inorder + 1, vin_right, inorder_map);
 
         return root;
     }

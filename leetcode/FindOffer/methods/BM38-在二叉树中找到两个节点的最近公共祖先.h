@@ -1,23 +1,18 @@
 #include "../include/struct_define.h"
 
 class lowestCommonAncestorSolution {
-public:
+   public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if (!root) return nullptr;
 
-    int lowestCommonAncestor(TreeNode* root, int o1, int o2) {
-        if (root == nullptr) {
-            return -1;
-        }
-        if (o1 == root->val || o2 == root->val) {
-            return root->val;
-        }
-        int left = lowestCommonAncestor(root->left, o1, o2);
-        int right = lowestCommonAncestor(root->right, o1, o2);
-        if (left == -1) {
-            return right;
-        }
-        if (right == -1) {
-            return left;
-        }
-        return root->val;
+        if (root->val == p->val || root->val == q->val) return root;
+
+        TreeNode* leftRes = lowestCommonAncestor(root->left, p, q);
+        TreeNode* rightRes = lowestCommonAncestor(root->right, p, q);
+
+        if (!leftRes) return rightRes;
+        if (!rightRes) return leftRes;
+
+        return root;
     }
 };

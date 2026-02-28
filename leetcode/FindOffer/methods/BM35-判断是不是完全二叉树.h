@@ -1,32 +1,32 @@
-#include "../include/struct_define.h"
 #include <queue>
-class isCompleteTreeSolution {
-public:
 
+#include "../include/struct_define.h"
+class isCompleteTreeSolution {
+   public:
+    // 完全二叉树的性质是：除了最后一层之外，其余层都被填满，且最后一层的节点全部靠左排列。
     bool isCompleteTree(TreeNode* root) {
-        if (root == nullptr) {
-            return true;
-        }
+        if (!root) return true;
+
         std::queue<TreeNode*> q;
         q.push(root);
-        bool flag = false;
+
+        bool has_null_encountered = false;
         while (!q.empty()) {
-            int len = q.size();
-            while (len > 0) {
-                TreeNode* node = q.front();
-                q.pop();
-                len--;
-                if (node == nullptr) {
-                    flag = true;
-                } else {
-                    if (flag) {
-                        return false;
-                    }
-                    q.push(node->left);
-                    q.push(node->right);
+            TreeNode* node = q.front();
+            q.pop();
+
+            if (!node) {
+                has_null_encountered = true;
+            } else {
+                if (has_null_encountered) {
+                    return false;
                 }
+
+                q.push(node->left);
+                q.push(node->right);
             }
         }
+
         return true;
     }
 };
