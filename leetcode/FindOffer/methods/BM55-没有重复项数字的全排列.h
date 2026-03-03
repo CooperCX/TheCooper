@@ -1,39 +1,37 @@
-#include <vector>
-#include <unordered_map>
 #include <algorithm>
+#include <unordered_map>
+#include <vector>
 
 class recursionSolution {
-public:
-
-    std::vector<std::vector<int>> permute(std::vector<int>& num) {
-        std::sort(num.begin(), num.end());
-        std::unordered_map<int, bool> vis;
-        std::vector<int> temp;
+   public:
+    std::vector<std::vector<int>> permute(std::vector<int>& nums) {
         std::vector<std::vector<int>> results;
+        std::vector<int> temp;
+        std::vector<bool> used(nums.size(), false);
 
-        premuteCore(num, vis, temp, results);
+        backtrack(nums, used, temp, results);
 
         return results;
     }
 
-private:
-    void premuteCore(const std::vector<int>& num,
-                     std::unordered_map<int, bool>& vis,
-                     std::vector<int>& temp,
-                     std::vector<std::vector<int>>& res) {
-        if (temp.size() == num.size()) {
-            res.push_back(temp);
+   private:
+    void backtrack(const std::vector<int>& nums, std::vector<bool>& used, std::vector<int>& temp,
+                   std::vector<std::vector<int>>& results) {
+        if (temp.size() == nums.size()) {
+            results.push_back(temp);
             return;
         }
-        for (int i = 0; i < num.size(); i++) {
-            if (vis[i]) {
-                continue;
-            }
-            temp.push_back(num[i]);
-            vis[i] = true;
-            premuteCore(num, vis, temp, res);
+
+        for (int i = 0; i < nums.size(); i++) {
+            if (used[i]) continue;
+
+            temp.push_back(nums[i]);
+            used[i] = true;
+
+            backtrack(nums, used, temp, results);
+
+            used[i] = false;
             temp.pop_back();
-            vis[i] = false;
         }
     }
 };

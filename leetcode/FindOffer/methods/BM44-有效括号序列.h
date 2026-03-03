@@ -1,33 +1,27 @@
-#include <unordered_map>
 #include <stack>
 #include <string>
+#include <unordered_map>
 
 class BracketValidSolution {
-public:
-
-    std::unordered_map<char, char> pairs = {{')', '('}, {']', '['}, {'}', '{'}};
+   public:
     bool isValid(std::string s) {
-        int n = s.length();
-        if (n == 0 || n & 1) {
-            return false;
-        }
-        std::stack<char> S;
-        if (pairs.end() != pairs.find(s[0])) {
-            return false;
-        } else {
-            S.push(s[0]);
-        }
-        for (int i = 1; i < n; i++) {
-            if (pairs.end() != pairs.find(s[i])) {
-                if (pairs[s[i]] != S.top()) {
-                    return false;
-                } else {
-                    S.pop();
-                }
+        int n = s.size();
+        if (n % 2) return false;
+        if (n == 0) return true;
+
+        std::unordered_map<char, char> pairs = {{')', '('}, {']', '['}, {'}', '{'}};
+
+        std::stack<char> stack;
+
+        for (const char& ch : s) {
+            if (pairs.count(ch)) {
+                if (stack.empty() || stack.top() != pairs[ch]) return false;
+                stack.pop();
             } else {
-                S.push(s[i]);
+                stack.push(ch);
             }
         }
-        return S.empty();
+
+        return stack.empty();
     }
 };

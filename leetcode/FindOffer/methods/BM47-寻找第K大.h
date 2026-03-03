@@ -1,12 +1,12 @@
-#include <vector>
 #include <functional>
 #include <queue>
+#include <vector>
 class findKthSolution {
-public:
+   public:
     // 借助小顶堆
-    int findKth(std::vector<int>& a, int n, int K) {
+    int findKth1(std::vector<int>& a, int n, int K) {
         std::priority_queue<int, std::vector<int>, std::greater<int>> q;
-        for(auto num : a) {
+        for (auto num : a) {
             if (q.size() < K) {
                 q.push(num);
             } else {
@@ -21,13 +21,13 @@ public:
     }
 
     // 快排思想
-    int findKth(std::vector<int>& a, int n, int k) {
+    int findKth2(std::vector<int>& a, int n, int k) {
         int result = 0;
         partition(a, 0, n - 1, k, result);
         return result;
     }
 
-private:
+   private:
     void partition(std::vector<int>& a, int start, int end, int k, int& result) {
         if (start >= end) {
             result = a[start];

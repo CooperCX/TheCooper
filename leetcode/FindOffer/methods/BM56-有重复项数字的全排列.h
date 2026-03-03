@@ -1,42 +1,40 @@
-#include <vector>
-#include <unordered_map>
 #include <algorithm>
+#include <unordered_map>
+#include <vector>
 
 class recursionUniqueSolution {
-public:
-
-    std::vector<std::vector<int>> permute(std::vector<int>& num) {
-        std::sort(num.begin(), num.end());
-        std::unordered_map<int, bool> vis;
-        std::vector<int> temp;
+   public:
+    std::vector<std::vector<int>> permuteUnique(std::vector<int>& nums) {
         std::vector<std::vector<int>> results;
+        std::vector<int> path;
+        std::vector<bool> used(nums.size(), false);
 
-        permuteCore(num, vis, temp, results);
+        std::sort(nums.begin(), nums.end());
+
+        backtrack(nums, path, used, results);
+
         return results;
     }
 
-private:
-    void permuteCore(const std::vector<int>& num,
-                     std::unordered_map<int, bool>& vis,
-                     std::vector<int>& temp,
-                     std::vector<std::vector<int>>& res) {
-
-        if (temp.size() == num.size()) {
-            res.push_back(temp);
+   private:
+    void backtrack(const std::vector<int>& nums, std::vector<int>& path, std::vector<bool>& used,
+                   std::vector<std::vector<int>>& results) {
+        if (path.size() == nums.size()) {
+            results.push_back(path);
             return;
         }
-        for (int i = 0; i < num.size(); i++) {
-            if (vis[i]) {
-                continue;
-            }
-            if (i > 0 && num[i] == num[i - 1] && !vis[i - 1]) {
-                continue;
-            }
-            temp.push_back(num[i]);
-            vis[i] = true;
-            permuteCore(num, vis, temp, res);
-            temp.pop_back();
-            vis[i] = false;
+
+        for (int i = 0; i < nums.size(); i++) {
+            if (used[i]) continue;
+            if (i > 0 && nums[i - 1] == nums[i] && !used[i - 1]) continue;
+
+            path.push_back(nums[i]);
+            used[i] = true;
+
+            backtrack(nums, path, used, results);
+
+            used[i] = false;
+            path.pop_back();
         }
     }
 };

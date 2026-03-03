@@ -1,30 +1,30 @@
 #include <queue>
 
 // 借助大小顶堆
-class GetMedianSolution {
-public:
-    void Insert(int num) {
+class MedianFinder {
+   public:
+    MedianFinder() {}
+
+    void addNum(int num) {
         count++;
         if (count & 1) {
-            small.push(num);
-            big.push(small.top());
-            small.pop();
+            right_min_heap.push(num);
+            left_max_heap.push(right_min_heap.top());
+            right_min_heap.pop();
         } else {
-            big.push(num);
-            small.push(big.top());
-            big.pop();
+            left_max_heap.push(num);
+            right_min_heap.push(left_max_heap.top());
+            left_max_heap.pop();
         }
     }
 
-    double GetMedian() {
-        if (count & 1) {
-            return big.top();
-        } else {
-            return (big.top() + small.top()) / 2.0;
-        }
+    double findMedian() {
+        if (count & 1) return left_max_heap.top();
+        return (left_max_heap.top() + right_min_heap.top()) / 2.0;
     }
-private:
+
+   private:
     int count = 0;
-    std::priority_queue<int, std::vector<int>, std::less<int>> big;
-    std::priority_queue<int, std::vector<int>, std::greater<int>> small;
+    std::priority_queue<int, std::vector<int>, std::less<int>> left_max_heap;
+    std::priority_queue<int, std::vector<int>, std::greater<int>> right_min_heap;
 };
