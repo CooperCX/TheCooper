@@ -1,33 +1,62 @@
+/*
+    用两个栈实现队列
+    核心思想：双栈倒腾法（输入栈 + 输出栈），利用 Lazy Evaluation 达到均摊 O(1)
+*/
 #include <stack>
-
-#include "../include/stack.h"
+// #include "../include/stack.h" // 如果你有自定义的栈结构，用这个
 class MyQueue {
    public:
     MyQueue() {}
-
-    void push(int x) { stack1.push(x); }
-
+    // ==========================================
+    // 入队操作 (负责进人)
+    // 时间复杂度：绝对 O(1)
+    // ==========================================
+    void push(int x) {
+        // 任何新来的元素，无脑压入 stack1 (输入栈)
+        stack1.push(x);
+    }
+    // ==========================================
+    // 出队操作 (负责出人)
+    // 时间复杂度：均摊 O(1)
+    // ==========================================
     int pop() {
+        // 直接复用 peek() 逻辑来确保队头元素已经准备好在 stack2 的山顶
         int node = peek();
-        stack2.pop();
+        if (node != -1) {
+            stack2.pop();  // 直接把位于 stack2 山顶的最老元素弹出
+        }
         return node;
     }
-
+    // ==========================================
+    // 查看队头元素
+    // 灵魂逻辑：惰性搬运 (Lazy Transfer)
+    // 时间复杂度：均摊 O(1)
+    // ==========================================
     int peek() {
+        // 如果两个栈都空，说明压根没人
         if (empty()) return -1;
-
+        // 【核心大甩卖】：当且仅当 输出栈 空了的时候，我们才去 输入栈 拿货！
+        // 如果 stack2 不为空，说明上次倒过来的那批老头老太还没处理完，继续出！
         if (stack2.empty()) {
+            // 把 stack1 里这些后进来的年轻人，全部连根拔起倒进 stack2
             while (!stack1.empty()) {
                 stack2.push(stack1.top());
                 stack1.pop();
             }
+            // 倒腾完之后，原本在 stack1 栈底最老资格的人，就被翻到了 stack2 的山顶！
         }
+
         return stack2.top();
     }
-
-    bool empty() { return stack1.empty() && stack2.empty(); }
+    // ==========================================
+    // 判空
+    // ==========================================
+    bool empty() {
+        // 只有当“输入仓库”和“输出仓库”同时没人的时候，队列才是真没人了
+        return stack1.empty() && stack2.empty();
+    }
 
    private:
-    std::stack<int> stack1;
-    std::stack<int> stack2;
+    std::stack<int> stack1;  // 专门负责进门的缓存栈
+    std::stack<int> stack2;  // 专门负责出门的倒置栈
 };

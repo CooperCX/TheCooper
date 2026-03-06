@@ -51,39 +51,45 @@ class calMaxValSolution {
     }
 
     // 高效解法：排序 + 前缀和 + 贪心 + 枚举中位数
-    double calMaxVal(const std::vector<int>& values) {
+    double calMaxValOpt(const std::vector<int>& values) {
         int n = values.size();
-        if (0 == n) {
+        if (n == 0) {
             return 0.0;
         }
 
-        // 1. 排序
-        std::sort(values.begin(), values.end());
+        // 1. 拷贝并排序 (注意入参是 const 引用，不可直接 sort)
+        std::vector<int> vals = values;
+        std::sort(vals.begin(), vals.end());
 
         // 2. 前缀和，使用 long long 防止大数累加溢出
         std::vector<long long> prefix_sum(n + 1, 0);
         for (int i = 0; i < n; i++) {
-            prefix_sum[i + 1] = prefix_sum[i] + values[i];
+            prefix_sum[i + 1] = prefix_sum[i] + vals[i];
         }
 
         double max_val = 0.0;
 
         // 3. 枚举每一个元素作为子序列的中位数 a[i]
+        // 由于必定存在一种最优解，其子序列长度为奇数 2*m + 1，因此中位数必定存在于原数组中
         for (int i = 0; i < n; i++) {
+            // max_m 为在 a[i] 左侧和右侧分别能取到的最大元素个数
             int max_m = std::min(i, n - 1 - i);
 
+            // 闭包函数：计算在中位数为 a[i]，且左右各取 m 个最大可能元素时的 (Mean - Median)
             auto get_val = [&](int m) -> double {
-                if (0 == m) {
-                    return 0.0;
+                if (m == 0) {
+                    return 0.0;  // 只有一个元素 a[i] 时，Mean - Median = a[i] - a[i] = 0
                 }
-                long long left_sum = prefix_sum[i + 1] - prefix_sum[i - m];
+                // 贪心策略：为了让平均数最大，左侧取紧挨着 a[i] 的 m 个元素（这是没办法，为了凑够中位数的位置）
+                long long left_sum = prefix_sum[i] - prefix_sum[i - m];
+                // 右侧取整个数组里最大的 m 个元素
                 long long right_sum = prefix_sum[n] - prefix_sum[n - m];
-                double mean = static_cast<double>(left_sum + right_sum) / (2 * m + 1);
 
-                return mean - values[i];
+                double mean = static_cast<double>(left_sum + right_sum + vals[i]) / (2 * m + 1);
+                return mean - vals[i];
             };
 
-            // get_val函数符合单峰特征，使用三分查找
+            // get_val(m) 随 m 的变化是一个单峰函数，可以使用三分查找 (Ternary Search)
             int l = 0, r = max_m;
             while (r - l > 2) {
                 int m1 = l + (r - l) / 3;
@@ -94,6 +100,7 @@ class calMaxValSolution {
                     l = m1;
                 }
             }
+            // 在缩小的范围内精确寻找最大值
             for (int m = l; m <= r; m++) {
                 max_val = std::max(get_val(m), max_val);
             }
