@@ -1,9 +1,9 @@
 #include <string>
 
 class getLeftRotateStringSolution {
-public:
+   public:
     // 巧妙substr()方法
-    std::string LeftRotateString(std::string str, int k) {
+    std::string LeftRotateString1(std::string str, int k) {
         int n = str.length();
         if (n == 0) {
             return str;
@@ -16,7 +16,7 @@ public:
     }
 
     //  循环k次
-    std::string LeftRotateString(std::string str, int k) {
+    std::string LeftRotateString2(std::string str, int k) {
         int n = str.length();
         if (n == 0) {
             return str;

@@ -1,7 +1,7 @@
 #include <vector>
 
 class FindGreatestSumOfSubArraySolution {
-   public:
+public:
     int FindGreatestSumOfSubArray(const std::vector<int>& array) {
         // 边界防护：如果数组为空，按照约定返回 0 或者抛出异常
         if (array.empty()) {
@@ -34,5 +34,18 @@ class FindGreatestSumOfSubArraySolution {
             res = std::max(dp[i], res);
         }
         return res;
+    }
+
+    int maxSubArray(std::vector<int>& nums) {
+        if (nums.empty()) return 0;
+
+        int max_sum = INT_MIN, min_prefix = 0, cur_prefix = 0;
+        for (int i = 0; i < nums.size(); ++i) {
+            cur_prefix += nums[i];
+            max_sum = std::max(max_sum, cur_prefix - min_prefix);
+            min_prefix = std::min(min_prefix, cur_prefix);
+        }
+
+        return max_sum;
     }
 };

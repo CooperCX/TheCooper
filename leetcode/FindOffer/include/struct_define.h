@@ -1,3 +1,6 @@
+#pragma once
+
+#include <vector>
 /*链表节点*/
 struct ListNode {
     int val = 0;
@@ -33,4 +36,18 @@ struct TreeLinkNode {
     TreeLinkNode* right;
     TreeLinkNode* next;
     TreeLinkNode(int val) : val(val), left(nullptr), right(nullptr), next(nullptr) {}
+};
+
+struct Node {
+    int val;
+    std::vector<Node*> children;
+
+    Node() {}
+
+    Node(int _val) { val = _val; }
+
+    Node(int _val, std::vector<Node*> _children) {
+        val = _val;
+        children = _children;
+    }
 };

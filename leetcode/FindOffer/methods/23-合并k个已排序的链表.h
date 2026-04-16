@@ -1,7 +1,7 @@
 #include <queue>
 #include <vector>
 
-#include "BM4-合并两个排序链表.h"  // 假设里面有 mergeListSolution::mergeList
+#include "21-合并两个排序链表.h"  // 假设里面有 mergeListSolution::mergeList
 
 class mergeKListsSolution {
    public:

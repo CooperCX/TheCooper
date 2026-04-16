@@ -58,7 +58,7 @@ void ShowArgs(Args&&... args) {
         * unique_ptr可以通过std::move转换成shared_ptr
 
     * shared_ptr：基于引用计数的智能指针，当指针的引用计数为0时自动释放。可以拷贝和赋值。
-        * shared_ptr的大小为两个指针的大小，一个用于对象，一个用于包含引用计数的共享控制快
+        * shared_ptr的大小为两个指针的大小，一个用于对象，一个用于包含引用计数的共享控制块
         * 调用use_count函数可以获得当前托管指针的引用计数
         * unique_ptr不可以转换成shared_ptr
 

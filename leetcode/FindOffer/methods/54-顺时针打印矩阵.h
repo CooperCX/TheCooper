@@ -3,7 +3,7 @@
 /*顺时针打印矩阵*/
 class printMatrixSolution {
    public:
-    std::vector<int> printMatrix(std::vector<std::vector<int>> matrix) {
+    std::vector<int> printMatrix(const std::vector<std::vector<int>>& matrix) {
         std::vector<int> res;
         if (matrix.empty() || matrix[0].empty()) {
             return res;

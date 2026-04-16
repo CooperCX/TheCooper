@@ -1,7 +1,7 @@
 #include <cstddef>
 #include <stack>
 
-#include "BM1-反转链表.h"
+#include "206-反转链表.h"
 
 class addInListSolution {
    public:
@@ -9,8 +9,8 @@ class addInListSolution {
         if (!head1) return head2;
         if (!head2) return head1;
 
-        head1 = reverseListSolution::reverseList(head1);
-        head2 = reverseListSolution::reverseList(head2);
+        head1 = reverseListSolution::reverseListIterative(head1);
+        head2 = reverseListSolution::reverseListIterative(head2);
 
         ListNode* resNode = nullptr;
         int carry = 0;

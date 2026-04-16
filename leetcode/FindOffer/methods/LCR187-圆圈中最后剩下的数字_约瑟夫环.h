@@ -1,8 +1,8 @@
 
 
 class JosephusCircleSolution {
-public:
-    int JosephusCircle(int n, int m) {
+   public:
+    int JosephusCircle1(int n, int m) {
         if (n <= 0 || m <= 0) {
             return -1;
         }
@@ -13,7 +13,7 @@ public:
         return ans;
     }
 
-    int JosephusCircle(int n, int m) {
+    int JosephusCircle2(int n, int m) {
         if (n == 0) {
             return -1;
         }
@@ -21,6 +21,6 @@ public:
             return 0;
         }
 
-        return (m + JosephusCircle(n - 1, m)) % n;
+        return (m + JosephusCircle2(n - 1, m)) % n;
     }
 };

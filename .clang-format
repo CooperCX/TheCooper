@@ -7,6 +7,9 @@ BasedOnStyle:    Google
 # 缩进宽度 (Google默认是2，很多C++项目习惯4，这里可以改)
 IndentWidth:     4
 
+# 控制 C++ 类（或结构体）中 访问修饰符相对缩进偏移量
+AccessModifierOffset: -4
+
 # 指针/引用对齐方式: Left (*a), Right (a*), Middle ( * a)
 PointerAlignment: Left
 
