@@ -13,5 +13,5 @@ inline int canCompleteCircuit(std::vector<int>& gas, std::vector<int>& cost) {
 
     if (currentGas < 0) return -1;
 
-    return res;
+    return res == gas.size() ? 0 : res;
 }
