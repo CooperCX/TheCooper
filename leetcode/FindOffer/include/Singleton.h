@@ -1,12 +1,29 @@
 #include <mutex>
 
+class Singleton {
+public:
+    static Singleton& Get() {
+        static Singleton singleton;
+        return singleton;
+    }
+
+    Singleton(const Singleton& other) = delete;
+    Singleton& operator=(const Singleton& other) = delete;
+
+    Singleton(Singleton&& other) = delete;
+    Singleton& operator=(Singleton&& other) = delete;
+
+private:
+    Singleton() {}
+    ~Singleton() {}
+};
+
 /*饿汉模式*/
 class Singleton1 {
 public:
     Singleton1(const Singleton1* other) = delete;
-    static Singleton1* Get() {
-        return m_Instance;
-    }
+    static Singleton1* Get() { return m_Instance; }
+
 private:
     Singleton1() {}
     static Singleton1* m_Instance;
@@ -26,27 +43,10 @@ public:
         return m_Instance;
     }
     static std::mutex mutex;
+
 private:
     Singleton2() {}
     static Singleton2* m_Instance;
 };
 
 Singleton2* Singleton2::m_Instance = nullptr;
-
-/*the chreno*/
-class Singleton {
-public:
-    Singleton(const Singleton& other) = delete;
-    static Singleton& Get() {
-        static Singleton m_Instance;
-        return m_Instance;
-    }
-    static int Int() {
-        return Get().IntImpl();
-    }
-private:
-    int IntImpl() { return 5; }
-    Singleton() {}
-};
-
-int number = Singleton::Int();

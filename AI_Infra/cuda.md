@@ -43,3 +43,11 @@ cudaMemcpy(void *dst, const void *src, size_t count, cudaMemcpyKind kind): 控�
 kind 是一个枚举：
     **cudaMemcpyHostToDevice**
     **cudaMemcpyDeviceToHost**
+
+用 Shared Memory 来实现 Software Cache (软件缓存) 和 避免重复的全局内存访问，是 CUDA 开发必须掌握的基础！
+
+**__syncthreads()**：块内屏障同步（Block-level Barrier Synchronization）
+它的语义非常霸道：车间（Block）内的任何一个线程遇到了这句代码，都必须强制停在原地罚站。直到这个车间里的所有 128 个线程全部都执行到了这一句，哨声才会解除，所有人才能继续往下干活
+
+
+**__shfl_sync**：同一个 Warp 的 32 个线程，直接在一条汇编指令的周期内，把某个线程寄存器里的值，硬塞到另一个线程的寄存器里
