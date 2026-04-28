@@ -2,7 +2,7 @@
 #include <cstddef>
 #include <vector>
 
-#include "cuda_stub/cuda_runtime.h"
+#include <cuda_runtime.h>
 
 #define HIDDEN_SIZE 1024
 

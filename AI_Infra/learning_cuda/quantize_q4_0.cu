@@ -1,5 +1,5 @@
 #include <cstdint>
-#include "cuda_stub/cuda_runtime.h"
+#include <cuda_runtime.h>
 
 #define QK4_0 32  // 每一个量化块包含 32 个元素
 

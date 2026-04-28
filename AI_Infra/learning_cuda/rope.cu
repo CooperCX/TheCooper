@@ -1,6 +1,6 @@
 #include <cmath>
 
-#include "cuda_stub/cuda_runtime.h"
+#include <cuda_runtime.h>
 
 __global__ void rope_kernel(float2* q, float2* k, int seq_len, int head_dim, float base = 10000.0f) {
     int global_tid = blockIdx.x * blockDim.x + threadIdx.x;

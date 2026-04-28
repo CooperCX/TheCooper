@@ -1,6 +1,6 @@
 #include <sys/cdefs.h>
 
-#include "cuda_stub/cuda_runtime.h"
+#include <cuda_runtime.h>
 
 #define WARP_SIZE 32
 

@@ -1,7 +1,6 @@
 #include <vector>
 
-#include "cuda_runtime.h"
-#include "cuda_stub/cuda_runtime.h"
+#include <cuda_runtime.h>
 
 // ==========================================
 // 核心算子 1：Global Memory 基础访问

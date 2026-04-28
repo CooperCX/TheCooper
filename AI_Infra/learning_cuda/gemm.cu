@@ -1,4 +1,4 @@
-#include "cuda_stub/cuda_runtime.h"
+#include <cuda_runtime.h>
 
 // Lv1: Naive GEMM (朴素版本)
 // C = A * B

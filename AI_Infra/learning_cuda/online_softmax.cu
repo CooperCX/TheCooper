@@ -1,8 +1,8 @@
+#include <cuda_runtime.h>
+
+#include <cmath>
 #include <iostream>
 #include <vector>
-#include <cmath>
-#include "cuda_runtime.h"
-// #include "cuda_stub/cuda_runtime.h" // 根据你的 IDE 环境自行决定是否启用
 
 // ==========================================
 // 高性能 Fused Online Softmax
@@ -14,7 +14,7 @@ __global__ void block_online_softmax_kernel(const float* X, float* Y, int N) {
     const float* row_x = X + blockIdx.x * N;
     float* row_y = Y + blockIdx.x * N;
 
-    int tid = threadIdx.x; // 车间内的工人编号
+    int tid = threadIdx.x;  // 车间内的工人编号
 
     // ----------------------------------------------------
     // Phase 1: Thread-Local 在线归约 (工人在自己的跑道上贪吃蛇)
@@ -38,12 +38,12 @@ __global__ void block_online_softmax_kernel(const float* X, float* Y, int N) {
     // ----------------------------------------------------
     // 申请一块外部传入尺寸的 Shared Memory 作为黑板
     extern __shared__ float s_mem[];
-    float* s_m = s_mem;                  // 前半段给 Maximum 存放
-    float* s_d = s_mem + blockDim.x;     // 后半段给 Denominator(分母) 存放
+    float* s_m = s_mem;               // 前半段给 Maximum 存放
+    float* s_d = s_mem + blockDim.x;  // 后半段给 Denominator(分母) 存放
 
-    s_m[tid] = local_m; // 每个人把自己的结果写上黑板
+    s_m[tid] = local_m;  // 每个人把自己的结果写上黑板
     s_d[tid] = local_d;
-    __syncthreads();    // 严禁抢乱：吹哨等所有人都写完
+    __syncthreads();  // 严禁抢乱：吹哨等所有人都写完
 
     // 为了最直观的教学展示，我们让 0 号线程（队长）通过遍历黑板来汇总。
     // （在真实的高级工程里，这里会用昨天的 Warp Shuffle 进行树状折叠，以达到纳秒级速度）
@@ -53,7 +53,7 @@ __global__ void block_online_softmax_kernel(const float* X, float* Y, int N) {
         for (int i = 0; i < blockDim.x; ++i) {
             float m = s_m[i];
             float d = s_d[i];
-            
+
             // 🔥 这里又发生了一次同样原理的打折合并！🔥
             // 把各个工人手里段落的旧账，合并成整个车间的终极老账
             float new_m = fmaxf(block_m, m);
@@ -64,7 +64,7 @@ __global__ void block_online_softmax_kernel(const float* X, float* Y, int N) {
         s_m[0] = block_m;
         s_d[0] = block_d;
     }
-    __syncthreads(); // 再次吹哨：所有人必须等队长算出车间最终值！
+    __syncthreads();  // 再次吹哨：所有人必须等队长算出车间最终值！
 
     // 所有工人去黑板读最终的王者数据
     float final_m = s_m[0];
@@ -84,8 +84,8 @@ __global__ void block_online_softmax_kernel(const float* X, float* Y, int N) {
 // Host 端驱动代码：搭建环境并执行
 // ==========================================
 int main() {
-    int batch_size = 1;     // 我们就处理一行数据
-    int N = 2000;           // 这行有 2000 长度
+    int batch_size = 1;  // 我们就处理一行数据
+    int N = 2000;        // 这行有 2000 长度
     size_t size = batch_size * N * sizeof(float);
 
     std::vector<float> h_x(N);
@@ -93,7 +93,7 @@ int main() {
 
     // 人造一些易爆数值：如果这里直接指数 expf(100+i)，普通算法早溢出变 Inf 了。
     for (int i = 0; i < N; ++i) {
-        h_x[i] = -50.0f + static_cast<float>(i) * 0.1f; 
+        h_x[i] = -50.0f + static_cast<float>(i) * 0.1f;
     }
 
     float *d_x, *d_y;
@@ -102,8 +102,8 @@ int main() {
     cudaMemcpy(d_x, h_x.data(), size, cudaMemcpyHostToDevice);
 
     // 执行拓扑规划
-    int block_size = 128; // 一个车间 128 号工位
-    int grid_size = batch_size; // 有几行矩阵就开几个车间处理
+    int block_size = 128;        // 一个车间 128 号工位
+    int grid_size = batch_size;  // 有几行矩阵就开几个车间处理
 
     // 要给厂长留够黑板空间存放 M 和 D（每个分别长 block_size）
     size_t shared_mem_size_bytes = 2 * block_size * sizeof(float);

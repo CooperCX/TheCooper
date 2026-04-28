@@ -1,7 +1,8 @@
-#include <cmath>
-#include <vector>
+#include <cuda_runtime.h>
 
-#include "cuda_stub/cuda_runtime.h"
+#include <cmath>
+#include <cstdio>
+#include <vector>
 
 __global__ void sigmoid_kernel(const float* x, float* y, int N) {
     int global_tid = blockIdx.x * blockDim.x + threadIdx.x;
@@ -155,38 +156,63 @@ __global__ void safe_softmax_kernel(const float* x, float* y, int N) {
     }
 }
 
+#define CHECK_CUDA(call)                                                                       \
+    do {                                                                                       \
+        cudaError_t err = call;                                                                \
+        if (err != cudaSuccess) {                                                              \
+            printf("CUDA Error at %s:%d - %s\n", __FILE__, __LINE__, cudaGetErrorString(err)); \
+            exit(1);                                                                           \
+        }                                                                                      \
+    } while (0)
+
 int main() {
-    // 设定测试的数据规模 (1000 万个浮点数，约 40MB 数据)
-    const int rows = 10000;
-    const int cols = 1024;
-    const int N = rows * cols;
+    const int N = 10;
     const int bytes = N * sizeof(float);
 
-    // 1. Host (CPU) 端申请内存并初始化
-    std::vector<float> h_in(N);
-    std::vector<float> h_out(N);
+    std::vector<float> h_in = {-2.0f, -1.0f, -0.5f, 0.0f, 0.5f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f};
+    std::vector<float> h_out(N, 0.0f);
 
-    // 生成一些测试数据，包含正负数
-    for (int i = 0; i < N; ++i) {
-        h_in[i] = (i & 1) ? -1.0f : 1.0f;
-    }
+    printf("Input data (Host): ");
+    for (int i = 0; i < N; ++i) printf("%.2f ", h_in[i]);
+    printf("\n");
 
-    // 2. Device (GPU) 端申请显存
     float *d_in = nullptr, *d_out = nullptr;
-    cudaMalloc((void**)&d_in, bytes);
-    cudaMalloc((void**)&d_out, bytes);
+    CHECK_CUDA(cudaMalloc((void**)&d_in, bytes));
+    CHECK_CUDA(cudaMalloc((void**)&d_out, bytes));
 
-    // 3. 将数据从 Host 拷贝到 Device (H2D)
-    cudaMemcpy(d_in, h_in.data(), bytes, cudaMemcpyHostToDevice);
+    CHECK_CUDA(cudaMemcpy(d_in, h_in.data(), bytes, cudaMemcpyHostToDevice));
 
-    // 4. 执行 kernel 函数
-    safe_softmax_kernel<<<rows, cols>>>(d_in, d_out, cols);
+    int blockSize = 32;
+    int gridSize = 1;
 
-    // 等待 GPU 真的执行完毕 (因为 Kernel 启动是异步的!)
-    cudaDeviceSynchronize();
+    // 1. Test ReLU
+    relu_kernel<<<gridSize, blockSize>>>(d_in, d_out, N);
+    CHECK_CUDA(cudaDeviceSynchronize());
+    CHECK_CUDA(cudaMemcpy(h_out.data(), d_out, bytes, cudaMemcpyDeviceToHost));
+    printf("ReLU Result:       ");
+    for (int i = 0; i < N; ++i) printf("%.2f ", h_out[i]);
+    printf("\n");
 
-    cudaMemcpy(h_out.data(), d_out, bytes, cudaMemcpyDeviceToHost);
-    // 5. 释放资源，好习惯
+    // 2. Test Sigmoid
+    sigmoid_kernel<<<gridSize, blockSize>>>(d_in, d_out, N);
+    CHECK_CUDA(cudaDeviceSynchronize());
+    CHECK_CUDA(cudaMemcpy(h_out.data(), d_out, bytes, cudaMemcpyDeviceToHost));
+    printf("Sigmoid Result:    ");
+    for (int i = 0; i < N; ++i) printf("%.2f ", h_out[i]);
+    printf("\n");
+
+    // 3. Test Softmax
+    safe_softmax_kernel<<<1, blockSize>>>(d_in, d_out, N);
+    CHECK_CUDA(cudaDeviceSynchronize());
+    CHECK_CUDA(cudaMemcpy(h_out.data(), d_out, bytes, cudaMemcpyDeviceToHost));
+    printf("Softmax Result:    ");
+    float sum = 0;
+    for (int i = 0; i < N; ++i) {
+        printf("%.4f ", h_out[i]);
+        sum += h_out[i];
+    }
+    printf("(Sum: %.2f)\n", sum);
+
     cudaFree(d_in);
     cudaFree(d_out);
 

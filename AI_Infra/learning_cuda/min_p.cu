@@ -1,6 +1,6 @@
 #include <cmath>
 
-#include "cuda_stub/cuda_runtime.h"
+#include <cuda_runtime.h>
 
 // 设定: 假设用单个 Block 内的 1024 个线程，去清洗高达 128,000 个单词的分布概率
 #define THREAD_SIZE 1024
